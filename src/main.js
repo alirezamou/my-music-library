@@ -13,9 +13,21 @@ import {
   faChevronUp,
   faChevronDown,
   faCheck,
+  faPlus,
+  faTimes,
+  faTrashAlt,
+  faPenSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faChevronUp, faChevronDown, faCheck);
+library.add(
+  faChevronUp,
+  faChevronDown,
+  faCheck,
+  faPlus,
+  faTimes,
+  faTrashAlt,
+  faPenSquare
+);
 
 const app = createApp(App);
 
