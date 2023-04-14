@@ -1,54 +1,61 @@
 <template>
-    <table class="table table-striped align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th class="col-1" scope="col">#</th>
-                <th class="col-3" scope="col">
-                    <button @click="changeSortBy('title')" class="button column-th" role="button">
-                        <span class="title-th">Title</span>
-                        <fa-icon v-if="sortBy === 'title' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
-                        <fa-icon v-if="sortBy === 'title' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
-                    </button>
-                </th>
-                <th class="col-2" scope="col">
-                    <button @click="changeSortBy('artist')" class="button column-th" role="button">
-                        <span class="title-th">Artist</span>
-                        <fa-icon v-if="sortBy === 'artist' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
-                        <fa-icon v-if="sortBy === 'artist' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
-                    </button>
-                </th>
-                <th class="col-3" scope="col">
-                    <button @click="changeSortBy('album')" class="button column-th" role="button">
-                        <span class="title-th">Album</span>
-                        <fa-icon v-if="sortBy === 'album' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
-                        <fa-icon v-if="sortBy === 'album' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
-                    </button>
-                </th>
-                <th class="col-3" scope="col">
-                    <button @click="changeSortBy('genre')" class="button column-th" role="button">
-                        <span class="title-th">Genre</span>
-                        <fa-icon v-if="sortBy === 'genre' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
-                        <fa-icon v-if="sortBy === 'genre' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
-                    </button>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(song, index) in paginatedSongs" :key="index">
-                <th scope="row">{{ index + 1 }}</th>
-                <td>
-                    <button v-if="addingSong" @click="(e) => addSong(song, e)" class="button add-song-btn">
-                        <span>+</span>
-                        <fa-icon icon="fa-solid fa-check" />
-                    </button>
-                    {{ song.title }}
-                </td>
-                <td>{{ song.artist }}</td>
-                <td>{{ song.album }}</td>
-                <td>{{ song.genre }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-3">
+            <Playlists :addingSong="addingSong" :selectedPlaylist="selectedPlaylist" @changePlaylist="changePlaylist" />
+        </div>
+        <div class="col-9">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="col-1" scope="col">#</th>
+                        <th class="col-3" scope="col">
+                            <button @click="changeSortBy('title')" class="button column-th" role="button">
+                                <span class="title-th">Title</span>
+                                <fa-icon v-if="sortBy === 'title' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
+                                <fa-icon v-if="sortBy === 'title' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
+                            </button>
+                        </th>
+                        <th class="col-2" scope="col">
+                            <button @click="changeSortBy('artist')" class="button column-th" role="button">
+                                <span class="title-th">Artist</span>
+                                <fa-icon v-if="sortBy === 'artist' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
+                                <fa-icon v-if="sortBy === 'artist' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
+                            </button>
+                        </th>
+                        <th class="col-3" scope="col">
+                            <button @click="changeSortBy('album')" class="button column-th" role="button">
+                                <span class="title-th">Album</span>
+                                <fa-icon v-if="sortBy === 'album' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
+                                <fa-icon v-if="sortBy === 'album' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
+                            </button>
+                        </th>
+                        <th class="col-3" scope="col">
+                            <button @click="changeSortBy('genre')" class="button column-th" role="button">
+                                <span class="title-th">Genre</span>
+                                <fa-icon v-if="sortBy === 'genre' && sortDir ==='desc'" icon="fa-solid fa-chevron-up" />
+                                <fa-icon v-if="sortBy === 'genre' && sortDir ==='asc'" icon="fa-solid fa-chevron-down" />
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(song, index) in paginatedSongs" :key="index">
+                        <th scope="row">{{ index + 1 }}</th>
+                        <td>
+                            <button v-if="addingSong" @click="(e) => addSong(song, e)" class="button add-song-btn">
+                                <span>+</span>
+                                <fa-icon icon="fa-solid fa-check" />
+                            </button>
+                            {{ song.title }}
+                        </td>
+                        <td>{{ song.artist }}</td>
+                        <td>{{ song.album }}</td>
+                        <td>{{ song.genre }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -56,8 +63,13 @@ import songs from "@/assets/musics.json";
 import { orderBy } from "lodash-es";
 import paginate from "@/utils/paginate";
 
+import Playlists from "@/components/Playlists.vue";
+
 export default {
     name: "MusicIndex",
+    components: {
+        Playlists,
+    },
     created() {
         window.addEventListener("scroll", () => {
             if(this.totalPages <= this.currentPage) return;
@@ -73,12 +85,8 @@ export default {
             currentPage: 0,
             sortBy: "",
             sortDir: "asc",
-            addingSong: true,
-            selectedPlaylist: {
-                name: "my playlist",
-                slug: "my-playlist",
-                songs: [],
-            },
+            addingSong: false,
+            selectedPlaylist: null,
         }
     },
     computed: {
@@ -118,7 +126,13 @@ export default {
             }, 800);
         },
         changePlaylist(playlist) {
-            this.selectedPlaylist = playlist;
+            if(playlist === this.selectedPlaylist) {
+                this.selectedPlaylist = null;
+                this.addingSong = false;
+            } else {
+                this.selectedPlaylist = playlist;
+                this.addingSong = true;
+            }
         }
     }
 }
